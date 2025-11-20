@@ -1,0 +1,13 @@
+==================================================
+       FINAL ERROR REPORT
+==================================================
+ DISPLACEMENT u(x,y)
+  Relative L2 Error: 7.870244e-02
+  Relative H1 Error: 9.565494e-02
+  Relative H2 Error: 1.118292e-01
+--------------------------------------------------
+ AIRY STRESS v(x,y)
+  Relative L2 Error: 1.432455e-01
+  Relative H1 Error: 2.812221e-01
+  Relative H2 Error: 5.458401e-01
+==================================================
