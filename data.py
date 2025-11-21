@@ -4,8 +4,7 @@ import numpy as np
 import os
 import g_tr as gt
 
-# --- UPGRADED: Using Sobol Sequences --- #
-# For Sobol, powers of 2 are best. 4096 or 8192 are good choices near 5000.
+# For Sobol, powers of 2 are best, as it divide the region in equal halves
 # We will generate the next power of 2 and slice to keep N consistent or just use N.
 N = 4096
 Nb = 2000
@@ -16,26 +15,25 @@ print("Generating Interior Points using Sobol Sequences...")
 # 1. Initialize Sobol Sampler (Dimension = 2)
 sampler = qmc.Sobol(d=2, scramble=True)
 
-# 2. Generate points. Sobol works best with powers of 2 (m=13 -> 8192 points)
+# 2. Generate points. Sobol works best with powers of 2 
 # We generate slightly more than needed and slice, or nearest power of 2.
-# Let's generate the nearest power of 2 above N to ensure good properties, then slice.
 m = int(np.ceil(np.log2(N)))
 sobol_points = sampler.random_base2(m=m)
 domain_data = sobol_points[:N, :]  # Slice to exactly N points
 
 print(f"Interior domain data shape: {domain_data.shape}")
 
-
+# This function helps us to generate boundary points
 def generate_random_bdry(Nb):
     # For boundaries, simple random or 1D Sobol is fine. Keeping random for simplicity on edges.
     bdry_col = np.random.rand(Nb, 2)
     edge_choice = np.random.randint(0, 4, size=Nb)
 
     # 0: left (x=0), 1: right (x=1), 2: bottom (y=0), 3: top (y=1)
-    bdry_col[edge_choice == 0, 0] = 0.0
-    bdry_col[edge_choice == 1, 0] = 1.0
-    bdry_col[edge_choice == 2, 1] = 0.0
-    bdry_col[edge_choice == 3, 1] = 1.0
+    bdry_col[edge_choice == 0, 0] = 0.0    #Left Wall
+    bdry_col[edge_choice == 1, 0] = 1.0    #Right Wall
+    bdry_col[edge_choice == 2, 1] = 0.0    #Bottom Wall
+    bdry_col[edge_choice == 3, 1] = 1.0    #Top Wal
 
     return bdry_col
 
@@ -43,16 +41,16 @@ def generate_random_bdry(Nb):
 def compute_normals(bdry_col, eps=1e-8):
     x, y = bdry_col[:, 0], bdry_col[:, 1]
     n1, n2 = np.zeros_like(x), np.zeros_like(y)
-    n1[np.isclose(x, 0.0)] = -1.0
-    n1[np.isclose(x, 1.0)] = 1.0
-    n2[np.isclose(y, 0.0)] = -1.0
-    n2[np.isclose(y, 1.0)] = 1.0
+    n1[np.isclose(x, 0.0)] = -1.0   #(-1,0)
+    n1[np.isclose(x, 1.0)] = 1.0    #(1,1)
+    n2[np.isclose(y, 0.0)] = -1.0   #(0,-1)
+    n2[np.isclose(y, 1.0)] = 1.0    #(1,1)
     return n1.reshape(-1, 1), n2.reshape(-1, 1)
 
 
 bdry_col = generate_random_bdry(Nb)
 n1_np, n2_np = compute_normals(bdry_col)
-normal_vec = np.hstack([n1_np, n2_np])
+normal_vec = np.hstack([n1_np, n2_np])    #combining the two normals
 
 print(f"Boundary data shape: {bdry_col.shape}")
 print(f"Normal vector shape: {normal_vec.shape}")
@@ -69,5 +67,6 @@ g1_data, h1_data, g2_data, h2_data = gt.data_gen_bdry(bdry_col, normal_vec)
 with open("dataset/gt_on_{}".format(dataname), 'wb') as pfile:
     for item in [u_gt, v_gt, f_gt, source_v_gt, g1_data, h1_data, g2_data, h2_data]:
         pkl.dump(item, pfile)
+
 
 print("Data generation (Sobol) complete and saved.")
