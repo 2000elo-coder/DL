@@ -5,7 +5,7 @@ from sympy import symbols, diff, sin, pi, lambdify
 x, y = symbols('x y')
 
 # Exact solutions
-u_sym = sin(pi*x)**2 * sin(pi*y)**2
+u_sym = sin(pi*x)**2 * sin(pi*y)**2     #take factor of 1/2pie^2 for better loss results
 v_sym = (x**2 - 1)**2 * (y**2 - 1)**2
 
 # --- Mathematical Operators ---
@@ -53,4 +53,5 @@ def data_gen_interior(collocations):
 def data_gen_bdry(collocations, normal_vec):
     x_vals, y_vals = collocations[:, 0], collocations[:, 1]
     nx_vals, ny_vals = normal_vec[:, 0], normal_vec[:, 1]
+
     return from_seq_to_array([ld_u(x_vals, y_vals), ld_du_dn(x_vals, y_vals, nx_vals, ny_vals), ld_v(x_vals, y_vals), ld_dv_dn(x_vals, y_vals, nx_vals, ny_vals)])
