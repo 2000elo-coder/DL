@@ -6,20 +6,20 @@ class NN(torch.nn.Module):
     def __init__(self):
         super(NN, self).__init__()
 
-        # --- UPGRADED: Width increased to 60 as requested --- #
+        
         width = 60
 
-        self.L1 = torch.nn.Linear(2, width)
-        self.L2 = torch.nn.Linear(width, width)
-        self.L3 = torch.nn.Linear(width, width)
-        self.L4 = torch.nn.Linear(width, width)
-        self.L5 = torch.nn.Linear(width, width)
-        self.L6 = torch.nn.Linear(width, width)
-        self.L7 = torch.nn.Linear(width, 1)
+        self.L1 = torch.nn.Linear(2, width)    #Input layer
+        self.L2 = torch.nn.Linear(width, width)    #hidden layer 1
+        self.L3 = torch.nn.Linear(width, width)    #hidden layer 2
+        self.L4 = torch.nn.Linear(width, width)    #hidden layer 3
+        self.L5 = torch.nn.Linear(width, width)    #hidden layer 4
+        self.L6 = torch.nn.Linear(width, width)    #hidden layer 5
+        self.L7 = torch.nn.Linear(width, 1)    #output layer
 
     def forward(self, x, y):
         inputs = torch.cat([x, y], axis=1)
-        x1 = F.silu(self.L1(inputs))
+        x1 = F.silu(self.L1(inputs))    #using silu instead of tanh (this change reduced the final loss to 1/2 of initial loss)
         x2 = F.silu(self.L2(x1))
         x3 = F.silu(self.L3(x2))
         x4 = F.silu(self.L4(x3))
@@ -44,4 +44,5 @@ class VonKarmanPINN(torch.nn.Module):
 def init_weights(m):
     if isinstance(m, torch.nn.Linear):
         torch.nn.init.xavier_uniform_(m.weight)
+
         m.bias.data.fill_(0.0)
