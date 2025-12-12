@@ -1,0 +1,44 @@
+======================================================
+           VON KARMAN PINN - FINAL ANALYSIS           
+======================================================
+
+--- MODEL ARCHITECTURE ---
+VonKarmanPINN(
+  (net_u): NN(
+    (L1): Linear(in_features=2, out_features=60, bias=True)
+    (L2): Linear(in_features=60, out_features=60, bias=True)
+    (L3): Linear(in_features=60, out_features=60, bias=True)
+    (L4): Linear(in_features=60, out_features=60, bias=True)
+    (L5): Linear(in_features=60, out_features=60, bias=True)
+    (L6): Linear(in_features=60, out_features=60, bias=True)
+    (L7): Linear(in_features=60, out_features=1, bias=True)
+  )
+  (net_v): NN(
+    (L1): Linear(in_features=2, out_features=60, bias=True)
+    (L2): Linear(in_features=60, out_features=60, bias=True)
+    (L3): Linear(in_features=60, out_features=60, bias=True)
+    (L4): Linear(in_features=60, out_features=60, bias=True)
+    (L5): Linear(in_features=60, out_features=60, bias=True)
+    (L6): Linear(in_features=60, out_features=60, bias=True)
+    (L7): Linear(in_features=60, out_features=1, bias=True)
+  )
+)
+
+Total Parameters:      37082
+Non-zero Parameters:   37082
+Sparsity:              0.00%
+
+--- ERROR ANALYSIS ---
+Errors computed on interior domain points.
+
+DISPLACEMENT u(x,y):
+  Relative L2 Error:   1.437176e-01
+  Relative H1 Error:   1.724555e-01
+  Relative H2 Error:   1.810283e-01
+
+AIRY STRESS v(x,y):
+  Relative L2 Error:   6.160433e-02
+  Relative H1 Error:   1.099341e-01
+  Relative H2 Error:   2.101865e-01
+
+======================================================
